@@ -3,7 +3,7 @@ import { UserSchema,User } from "./schema"
 import {zodResolver} from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import { json } from "stream/consumers"
+import { LoginForm } from "@/forms/login-form"
 export function Login() {
     const form = useForm<User>({
         resolver: zodResolver(UserSchema),
@@ -43,28 +43,29 @@ export function Login() {
 
     }
     return (
-        <div className="max-w-[600px]  flex-col items-center justify-center mx-auto">
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(login)}>
-                <FormField name="email" control={form.control} render= {({field})=>(
-                    <FormItem>
-                        <FormControl>
-                         <input {...field} placeholder="Email" />
-                        </FormControl>
-                        <FormMessage/>
-                    </FormItem>
-                )} />
-                <FormField name="password" control={form.control} render= {({field})=>(
-                    <FormItem>
-                        <FormControl>
-                         <input {...field} placeholder="password" type="password"/>
-                        </FormControl>
-                        <FormMessage/>
-                    </FormItem>
-                )} />
-                <Button type="submit">Login</Button>
-            </form>
-        </Form>
-</div>
+        // <div className="max-w-[600px]  flex-col items-center justify-center mx-auto">
+        // <Form {...form}>
+        //     <form onSubmit={form.handleSubmit(login)}>
+        //         <FormField name="email" control={form.control} render= {({field})=>(
+        //             <FormItem>
+        //                 <FormControl>
+        //                  <input {...field} placeholder="Email" />
+        //                 </FormControl>
+        //                 <FormMessage/>
+        //             </FormItem>
+        //         )} />
+        //         <FormField name="password" control={form.control} render= {({field})=>(
+        //             <FormItem>
+        //                 <FormControl>
+        //                  <input {...field} placeholder="password" type="password"/>
+        //                 </FormControl>
+        //                 <FormMessage/>
+        //             </FormItem>
+        //         )} />
+        //         <Button type="submit">Login</Button>
+        //     </form>
+        // </Form>
+// </div>
+<LoginForm></LoginForm>
     )
 }

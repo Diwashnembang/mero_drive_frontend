@@ -1,20 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Login } from './forms/Login'
-
+import { useEffect } from "react";
+import "./App.css";
+import { useStore } from "./hooks/useStore";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router";
+import { AppSidebar } from "./components/app-sidebar";
+import {
+  SidebarMenuButton,
+  SidebarRail,
+  SidebarTrigger,
+} from "./components/ui/sidebar";
+import { FileGallery } from "./components/file-gallery";
 function App() {
-  const [count, setCount] = useState(0)
-
+  const { isAuthenticated, setIsAuthenticated, user } = useStore();
+  const nagivation = useNavigate();
+  useEffect(() => {
+    const token = Cookies.get("access_token");
+    console.log(user)
+    if (token) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+      nagivation("/login");
+    }
+  }, []);
   return (
     <>
-      <div className='text-4xl'>
-        hello! mero drive
-        <Login></Login>
+      <div className="text-4xl flex spacebetween items-center ">
+        {/* {isAuthenticated ? <AppSidebar  collapsible='icon' ></AppSidebar> : 'Please log in'} */}
+        <AppSidebar variant="sidebar"></AppSidebar>
+        <div className="min-h-screen bg-gray-50 py-8  px-1">
+          <div className="container mx-auto px-4" >
+            <FileGallery />
+          </div>
+        </div>
+        {/* <Input type='file'placeholder='file upload'></Input> */}
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
