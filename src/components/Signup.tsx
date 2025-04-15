@@ -1,46 +1,78 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { useAuthStore } from "../store/authStore"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import { Store } from "lucide-react";
+import { useStore } from "@/hooks/useStore";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { join } from "path";
+import { joinServerAndPath } from "@/utils/joinPath";
 
 export default function Signup() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const signup = useAuthStore((state) => state.signup)
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { setUser } = useStore();
+
+  const nagivate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    const url = joinServerAndPath("signup")
     try {
-      const success = await signup(name, email, password)
+      const success = await fetch(url , {
+        method: "POST",
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
       if (!success) {
-        setError("Failed to create account")
+        setError("Failed to create account");
       }
+      
+      const token = await success.text();
+      let decoded: any = jwtDecode(token);
+      setUser(decoded);
+      Cookies.set("access_token", `Bearer ${token}`, {
+        expires: new Date(decoded.exp),
+      });
+      nagivate("/");
     } catch (err) {
-      setError("An error occurred during signup")
+      setError("An error occurred during signup");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-800">Mero Drive</h1>
-          <h2 className="mt-6 text-2xl font-bold text-gray-900">Create your account</h2>
+          <h2 className="mt-6 text-2xl font-bold text-gray-900">
+            Create your account
+          </h2>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            role="alert"
+          >
             <span className="block sm:inline">{error}</span>
           </div>
         )}
@@ -110,7 +142,10 @@ export default function Signup() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
-              <Link to="/login" className="font-medium text-teal-600 hover:text-teal-500">
+              <Link
+                to="/login"
+                className="font-medium text-teal-600 hover:text-teal-500"
+              >
                 Sign in
               </Link>
             </p>
@@ -118,5 +153,5 @@ export default function Signup() {
         </form>
       </div>
     </div>
-  )
+  );
 }

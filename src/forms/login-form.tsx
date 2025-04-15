@@ -15,6 +15,7 @@ import Cookies from "js-cookie"
 import { Navigate, useNavigate } from "react-router"
 import { useStore } from "../hooks/useStore"
 import { set } from "react-hook-form"
+import { joinServerAndPath } from "@/utils/joinPath"
 
 export function LoginForm({
   className,
@@ -31,7 +32,8 @@ export function LoginForm({
       email,
       password,
     }
-    const url: string = "http://localhost:8000/login"
+    const url: string = joinServerAndPath("login")
+    console.log(url)
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -47,7 +49,7 @@ export function LoginForm({
         try{
           let decoded:any = jwtDecode(token)
           setUser(decoded)
-          Cookies.set("access_token", `Bearer ${token}`, { expires: new Date(decoded.exp) })
+          Cookies.set("access_token", `Bearer ${token}`, { expires: new Date(decoded.exp) ,sameSite: "lax"})
           nagivate("/")
         }catch(e){
          throw ("Invalid token")

@@ -5,32 +5,52 @@ import { useEffect } from "react"
 import { useStore } from "@/hooks/useStore"
 import { FileCardProps } from "./File-card"
 import { set } from "react-hook-form"
+import { joinServerAndPath } from "@/utils/joinPath"
+import Cookies from "js-cookie"
 
 
 const fetchFilesIDS = async (): Promise<string[]>=> {
-  const response = await fetch("http://localhost:8000/getAllID", {
+  let ids:string[] = []
+  const url = joinServerAndPath(`getAllID`)
+  try{
+  const response = await fetch(url, {
     method: "GET",
     credentials: "include",
+    headers:{
+      Authorization: Cookies.get("access_token") || "",
+    }
   })
   if (!response.ok) {
-    throw new Error("Network response was not ok")
+    let e = await response.text()
+    console.log("this is e", e)
+    throw e 
   }
-    const data:string[] = await response.json()
-
-  return data 
+    ids = await response.json()
+    console.log(ids)
+}catch(e){
+  console.log(e)
+}
+  return ids 
 }
 const fetchFile = async(fileId:string): Promise<File>=> {
-    const response = await fetch(`http://localhost:8000/file/${fileId}`, {
+  const url = joinServerAndPath(`file/${fileId}`)
+  let file:File = {} as File
+    try{
+    const response = await fetch(url, {
         method: "GET",
-        credentials: "include",
+    headers:{
+      Authorization: Cookies.get("access_token") || "",
+    }
       })
       if (!response.ok) {
         throw new Error("Network response was not ok")
       }
        const contentType = response.headers.get("Content-Type") || "application/octet-stream";
         const data:Blob = await response.blob()
-        const file:File = new File([data], fileId, { type:  contentType})
-    
+        file = new File([data], fileId, { type:  contentType})
+    }catch(e){
+        console.log(e)
+    }
       return file 
 }
 const fetchFiles = async (fileIds:string[]): Promise<File[]>=> {
