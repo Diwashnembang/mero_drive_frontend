@@ -1,10 +1,8 @@
-import { useFileStore } from "@/store/file-store"
 import { FileCard } from "./File-card"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { useStore } from "@/hooks/useStore"
 import { FileCardProps } from "./File-card"
-import { set } from "react-hook-form"
 import { joinServerAndPath } from "@/utils/joinPath"
 import Cookies from "js-cookie"
 

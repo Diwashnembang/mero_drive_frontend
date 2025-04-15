@@ -12,9 +12,8 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { jwtDecode } from "jwt-decode"
 import Cookies from "js-cookie"
-import { Navigate, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 import { useStore } from "../hooks/useStore"
-import { set } from "react-hook-form"
 import { joinServerAndPath } from "@/utils/joinPath"
 
 export function LoginForm({

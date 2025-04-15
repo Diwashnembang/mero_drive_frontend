@@ -3,7 +3,7 @@ import type React from "react"
 import { useState, useRef } from "react"
 import { useAuthStore } from "../store/authStore"
 import { useFileStore, type File } from "../store/fileStore"
-import { FolderIcon, DocumentIcon, DownloadIcon, TrashIcon, LogOutIcon, UploadIcon } from "../components/Icons"
+import { FolderIcon, DocumentIcon, DownloadIcon, TrashIcon, LogOutIcon, UploadIcon } from "../components/icons"
 
 export default function Dashboard() {
   const { user, logout } = useAuthStore()

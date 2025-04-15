@@ -5,17 +5,14 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
 import { AppSidebar } from "./components/app-sidebar";
 import {
-  SidebarMenuButton,
-  SidebarRail,
   SidebarTrigger,
 } from "./components/ui/sidebar";
 import { FileGallery } from "./components/File-gallery";
 function App() {
-  const { isAuthenticated, setIsAuthenticated, user } = useStore();
+  const {  setIsAuthenticated  } = useStore();
   const nagivation = useNavigate();
   useEffect(() => {
     const token = Cookies.get("access_token");
-    console.log(user)
     if (token) {
       setIsAuthenticated(true);
     } else {

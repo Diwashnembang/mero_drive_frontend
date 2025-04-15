@@ -1,20 +1,15 @@
 import { useRef } from "react";
 import Cookies from "js-cookie";
-import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
   DropdownMenuItem,
 } from "./ui/dropdown-menu";
-import { useStore } from "@/hooks/useStore";
-import { join } from "path";
 import { joinServerAndPath } from "@/utils/joinPath";
 
 export function UploadDropDown() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { user } = useStore();
   const openDialog = () => {
     if (fileInputRef.current) {
       fileInputRef.current?.click();

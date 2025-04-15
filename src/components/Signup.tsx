@@ -4,12 +4,9 @@ import type React from "react";
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import { Store } from "lucide-react";
 import { useStore } from "@/hooks/useStore";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import { join } from "path";
 import { joinServerAndPath } from "@/utils/joinPath";
 
 export default function Signup() {
