@@ -18,6 +18,6 @@ export const useStore = create<StoreState>((set) => ({
   setIsAuthenticated: (isAuthenticated : boolean) => set({ isAuthenticated }), 
   user : token ? jwtDecode(token) : {},
   setUser: (user : any) => set({ user}),
-  files : {} as FileCardProps[],
-  setFiles: (files : FileCardProps[]) => set({ files})
+  files : [] as FileCardProps[],
+  setFiles: (files : FileCardProps[]) => set((prev)=>( {files : [...prev.files,...files]}))
 })) 

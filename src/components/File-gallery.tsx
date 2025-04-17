@@ -1,11 +1,10 @@
 import { FileCard } from "./File-card"
 import { useQuery } from "@tanstack/react-query"
-import { useEffect } from "react"
+import { useEffect, useMemo, useState , useRef} from "react"
 import { useStore } from "@/hooks/useStore"
 import { FileCardProps } from "./File-card"
 import { joinServerAndPath } from "@/utils/joinPath"
 import Cookies from "js-cookie"
-
 
 const fetchFilesIDS = async (): Promise<string[]>=> {
   let ids:string[] = []
@@ -76,19 +75,29 @@ const fetchFiles = async (fileIds:string[]): Promise<File[]>=> {
 }
 
 export function FileGallery() {
+    const imgUriRef = useRef<string[]>([])
     const { data: fileIds } = useQuery<string[]>({
         queryKey: ["files"],
         queryFn: fetchFilesIDS,
     })
-
-    const { data: fetchedFiles } = useQuery<File[]>({
-        queryKey: ["files", fileIds],
-        queryFn: () => fetchFiles(fileIds ?? []),
-        enabled: !!fileIds,
+    const batch = useMemo(() => {
+        if (!fileIds) return [] as string[][]
+        let arr: string[][] =[]
+        for (let i = 0; i < fileIds.length; i += 3) {
+            arr.push(fileIds.slice(i, i + 3))
+        }
+        return arr
+    }, [fileIds])
+    const [batchIndex, setBatchIndex] = useState<number>(0)
+    const currentBatch: string[]= batch[batchIndex] ?? [] 
+    const { data: fetchedFiles, isSuccess : gotFile } = useQuery<File[]>({
+        queryKey: ["files", currentBatch],
+        queryFn: () => fetchFiles(currentBatch),
+        enabled: currentBatch.length > 0,
     })
     const {files, setFiles} = useStore() 
     useEffect(()=>{
-      if(!fetchedFiles) return 
+      if(!fetchedFiles && !gotFile) return 
       let files:FileCardProps[] = []
       fetchedFiles.forEach((file) => {
         let filecard: FileCardProps={
@@ -101,12 +110,19 @@ export function FileGallery() {
           }
         }
         files.push(filecard)
+        imgUriRef.current.push(filecard.file.url)
       })
       setFiles(files)
-      return () => {
-        files.forEach((file) => URL.revokeObjectURL(file.file.url))
+      if (batchIndex < batch.length - 1) {
+        setBatchIndex((prev) => prev + 1)
       }
-    },[fetchedFiles])
+    },[fetchedFiles, gotFile])
+    useEffect(()=>{
+      return () => {
+        
+        imgUriRef.current.forEach((uri) => URL.revokeObjectURL(uri))
+      }
+    }, [])
   return (
     <div className="container mx-auto py-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -118,3 +134,4 @@ export function FileGallery() {
     </div>
   )
 }
+
