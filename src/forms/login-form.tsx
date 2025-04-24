@@ -117,7 +117,7 @@ export function LoginForm({
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
+              <a href="#" className="underline underline-offset-4"  onClick={() => nagivate("/signup")}>
                 Sign up
               </a>
             </div>
