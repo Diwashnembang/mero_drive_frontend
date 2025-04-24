@@ -31,13 +31,56 @@ export function FileCard({ file }: FileCardProps): React.JSX.Element {
     setExpanded(!expanded);
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
+    if (isVideo) {
+      await handleVideoDownload();
+      return;
+    }
     const link = document.createElement("a");
     link.href = file.url;
     link.download = file.name;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleVideoDownload = async () => {
+    const url = joinServerAndPath(`getTempToken/${file.id}`);
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: Cookies.get("access_token") || "",
+        },
+      });
+      if (!response.ok) {
+        throw "Download not allowed";
+      }
+      const token = await response.text();
+      const videoUrl = joinServerAndPath(token);
+
+      // Fetch with range request
+      const videoResponse = await fetch(videoUrl, {
+        headers: {
+          Range: 'bytes=0-',
+        },
+      });
+
+      if (!videoResponse.ok) throw new Error('Network response was not ok');
+
+      const blob = await videoResponse.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+      alert(e);
+    }
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -47,11 +90,9 @@ export function FileCard({ file }: FileCardProps): React.JSX.Element {
   };
 
   const handlePlay = async () => {
-    console.log(videoRef.current)
     if (videoRef.current) {
       const videoElement = videoRef.current as HTMLVideoElement;
       videoElement.pause();
-      console.log(file.url)
       const url: string = joinServerAndPath(`getTempToken/${file.id}`);
       try {
         const response = await fetch(url, {
