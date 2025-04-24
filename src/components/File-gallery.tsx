@@ -126,6 +126,8 @@ export function FileGallery() {
     const { data: fileIds } = useQuery<string[]>({
         queryKey: ["files"],
         queryFn: fetchFilesIDS,
+        staleTime: Infinity, // prevents refetching unless explicitly invalidated
+        refetchOnWindowFocus: false // prevents refetch when window regains focus
     })
     const batch = useMemo(() => {
         if (!fileIds) return [] as string[][]
@@ -141,6 +143,8 @@ export function FileGallery() {
         queryKey: ["files", currentBatch],
         queryFn: () => fetchFiles(currentBatch),
         enabled: currentBatch.length > 0,
+        staleTime: Infinity, // prevents refetching unless explicitly invalidated
+        refetchOnWindowFocus: false // prevents refetch when window regains focus
     })
     const {files, setFiles, isAuthenticated} = useStore() 
     const [loadingCards, setLoadingCards] = useState<number>(3) // number of cards per batch
@@ -182,9 +186,11 @@ export function FileGallery() {
     },[fetchedFiles, gotFile])
     useEffect(()=>{
       return () => {
+        // Cleanup on unmount
         if(!isAuthenticated){
-        imgUriRef.current.forEach((uri) => URL.revokeObjectURL(uri))
+          imgUriRef.current.forEach((uri) => URL.revokeObjectURL(uri))
         }
+        setBatchIndex(0) // Reset batch index when component unmounts
       }
     }, [isAuthenticated])
   return (

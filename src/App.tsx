@@ -4,17 +4,16 @@ import { useStore } from "./hooks/useStore";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
 import { AppSidebar } from "./components/app-sidebar";
-import {
-  SidebarTrigger,
-} from "./components/ui/sidebar";
+import { SidebarTrigger } from "./components/ui/sidebar";
 import { FileGallery } from "./components/File-gallery";
+import { ProgressToast } from "./components/ui/progress-toast";
 
 function App() {
-  const {  setIsAuthenticated  } = useStore();
+  const { setIsAuthenticated, uploading } = useStore();
   const nagivation = useNavigate();
   useEffect(() => {
     const token = Cookies.get("access_token");
-    console.log(token)
+    console.log(token);
     if (token) {
       setIsAuthenticated(true);
     } else {
@@ -36,6 +35,15 @@ function App() {
           </div>
         </div>
       </div>
+      {uploading && (
+        <ProgressToast
+          progress={30}
+          fileName="Uploading file..."
+          onCancel={() => {
+            // Add cancel upload logic here
+          }}
+        />
+      )}
     </>
   );
 }
