@@ -1,4 +1,3 @@
-import * as React from "react"
 import * as Progress from "@radix-ui/react-progress"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"

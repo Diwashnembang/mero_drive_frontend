@@ -9,8 +9,6 @@ import {
 import { joinServerAndPath } from "@/utils/joinPath";
 import { useStore } from "@/hooks/useStore";
 import { FileCardProps } from "./File-card";
-import { useQueryClient } from "@tanstack/react-query";
-import { set } from "react-hook-form";
 
 export function UploadDropDown() {
   const { setFiles ,setUploading} = useStore();
