@@ -8,11 +8,13 @@ import {
   SidebarTrigger,
 } from "./components/ui/sidebar";
 import { FileGallery } from "./components/File-gallery";
+
 function App() {
   const {  setIsAuthenticated  } = useStore();
   const nagivation = useNavigate();
   useEffect(() => {
     const token = Cookies.get("access_token");
+    console.log(token)
     if (token) {
       setIsAuthenticated(true);
     } else {
@@ -20,18 +22,19 @@ function App() {
       nagivation("/login");
     }
   }, []);
+
   return (
     <>
-      <div className="text-4xl flex spacebetween items-center ">
-        {/* {isAuthenticated ? <AppSidebar  collapsible='icon' ></AppSidebar> : 'Please log in'} */}
-        <AppSidebar variant="sidebar"></AppSidebar>
-          <SidebarTrigger></SidebarTrigger>
-        <div className="min-h-screen bg-gray-50 py-8  px-1">
-          <div className="container mx-auto px-4" >
+      <div className="flex flex-col sm:flex-row min-h-screen bg-gray-50">
+        <AppSidebar variant="sidebar" />
+        <div className="flex-1 relative">
+          <div className="sticky top-0 z-10 bg-white border-b px-4 py-2 sm:hidden">
+            <SidebarTrigger />
+          </div>
+          <div className="p-2 sm:p-4">
             <FileGallery />
           </div>
         </div>
-        {/* <Input type='file'placeholder='file upload'></Input> */}
       </div>
     </>
   );

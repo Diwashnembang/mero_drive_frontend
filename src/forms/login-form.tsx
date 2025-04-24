@@ -48,7 +48,7 @@ export function LoginForm({
         try{
           let decoded:any = jwtDecode(token)
           setUser(decoded)
-          Cookies.set("access_token", `Bearer ${token}`, { expires: new Date(decoded.exp) ,sameSite: "lax"})
+          Cookies.set("access_token", `Bearer ${token}`, { expires: new Date(decoded.exp) ,sameSite: "lax" , httpOnly: false})
           nagivate("/")
         }catch(e){
          throw ("Invalid token")

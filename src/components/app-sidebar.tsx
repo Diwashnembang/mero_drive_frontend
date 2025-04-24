@@ -16,7 +16,7 @@ import {
 import { UploadDropDown } from "./UploadDropDown"
 
 // This is sample data.
-const data = {
+const _data = {
   navMain: [
     {
       title: "Getting Started",
@@ -179,7 +179,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <UploadDropDown></UploadDropDown>
         <SidebarGroup>
-          <SidebarMenu className="gap-2">
+          {/* <SidebarMenu className="gap-2">
             {data.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
@@ -200,7 +200,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 ) : null}
               </SidebarMenuItem>
             ))}
-          </SidebarMenu>
+          </SidebarMenu> */}
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
